@@ -56,3 +56,61 @@ a._A__method()  # never use this!! please!
 $ python example.py
 I'm a method in A
 If you try to access a.__method() it won't work either, as I said, __method is just accessible inside the class itself.
+
+Two underlines in the beginning and in the end
+When you see a method like __this__, the rule is simple: don't call it. Why? Because it means it's a method python calls, not you. Take a look:
+
+>>> name = "igor"
+>>> name.__len__()
+4
+>>> len(name)
+4
+
+>>> number = 10
+>>> number.__add__(20)
+30
+>>> number + 20
+30
+There is always an operator or native function that calls these magic methods. The idea here is to give you the ability to override operators in your own classes. Sometimes it's just a hook python calls in specific situations. __init__(), for example, is called when the object is created so you can initialize it. __new__() is called to build the instance, and so on...
+
+Here's an example:
+
+class CrazyNumber(object):
+    
+    def __init__(self, n):
+        self.n = n
+    
+    def __add__(self, other):
+        return self.n - other
+    
+    def __sub__(self, other):
+        return self.n + other
+    
+    def __str__(self):
+        return str(self.n)
+
+
+num = CrazyNumber(10)
+print num           # 10
+print num + 5       # 5
+print num - 20      # 30
+Another example:
+
+class Room(object):
+
+    def __init__(self):
+        self.people = []
+
+    def add(self, person):
+        self.people.append(person)
+
+    def __len__(self):
+        return len(self.people)
+
+room = Room()
+room.add("Igor")
+print len(room)     # 1
+The documentation covers all these special methods.
+
+Conclusion
+Use _one_underline to mark you methods as not part of the API. Use __two_underlines__ when you're creating objects to look like native python objects or you wan't to customize behavior in specific situations. And don't use __just_to_underlines, unless you really know what you're doing!
