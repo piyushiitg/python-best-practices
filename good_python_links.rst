@@ -1,5 +1,4 @@
 
-
 1. Docs and cool tips
 
 http://docs.python-guide.org/en/latest/
